@@ -1,12 +1,4 @@
 ---
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 86400
-  tags:
-    - update-cache
-    - install
-
 - name: Install dependencies
   ansible.builtin.apt:
     name: "{{ dependencies_packages }}"
@@ -14,8 +6,8 @@
     force: true
     update_cache: yes
   register: package_ok
-  retries: "{{ global_downloads_retries }}"
-  delay: "{{ global_downloads_delay }}"
+  retries: 5
+  delay: 2
   until: package_ok is success
   tags:
     - install
@@ -36,8 +28,8 @@
     dest: "{{ temp_folder }}/awscliv2.zip"
     mode: '0440'
   register: download_archive
-  retries: "{{ global_downloads_retries }}"
-  delay: "{{ global_downloads_delay }}"
+  retries: 5
+  delay: 2
   until: download_archive is success
   when: awscli_current_version.changed
   tags:
