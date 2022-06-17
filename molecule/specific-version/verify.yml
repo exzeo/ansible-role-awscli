@@ -1,0 +1,17 @@
+- name: Verify
+  hosts: all
+  tasks:
+  
+  - name: Check aws version
+    command: "aws --version"
+    register: awscli_current_version
+
+  - name: Ensure aws is installed
+    assert:
+      that:
+        - awscli_current_version.rc == 0
+
+  - name: Ensure aws is correct version
+    assert:
+      that:
+        - "'aws-cli/2.2.15' in awscli_current_version.stdout"

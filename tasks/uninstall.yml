@@ -1,0 +1,21 @@
+---
+- name: Remove /usr/local/aws-cli
+  file:
+    path: "/usr/local/aws-cli"
+    state: absent
+  tags:
+    - uninstall
+
+- name: Remove /usr/local/aws
+  file:
+    path: "/usr/local/aws"
+    state: absent
+  tags:
+    - uninstall
+
+- name: Remove /usr/local/bin/aws
+  file:
+    path: "/usr/local/bin/aws"
+    state: absent
+  tags:
+    - uninstall
