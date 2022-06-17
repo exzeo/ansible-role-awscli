@@ -1,3 +1,4 @@
+---
 dependencies: []
 
 galaxy_info:
@@ -6,7 +7,7 @@ galaxy_info:
   description: Role for installing the AWS cli
   company: "Exzeo"
   license: MIT
-  min_ansible_version: 2.1
+  min_ansible_version: "2.1"
   namespace: exzeo
 
   platforms:
