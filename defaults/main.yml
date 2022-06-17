@@ -1,0 +1,6 @@
+---
+# Version of 'awscli' to install, defaults to latest version
+awscli_version: ""
+
+# Toggling this will uninstall from the server
+uninstall: false

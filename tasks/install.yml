@@ -1,0 +1,71 @@
+---
+- name: Install dependencies
+  ansible.builtin.apt:
+    name: "{{ dependencies_packages }}"
+    state: present
+    force: true
+    update_cache: yes
+  register: package_ok
+  retries: 5
+  delay: 2
+  until: package_ok is success
+  tags:
+    - install
+    - install-dependency
+
+- name: Check current aws version.
+  ansible.builtin.command: "aws --version"
+  register: awscli_current_version
+  changed_when: awscli_current_version.rc != 0 or (awscli_version != "" and awscli_version not in awscli_current_version.stdout)
+  failed_when: false
+  tags:
+    - install
+    - check-current-version
+
+- name: Download archive # noqa no-handler
+  ansible.builtin.get_url:
+    url: "{{ awscli_download_url }}"
+    dest: "{{ temp_folder }}/awscliv2.zip"
+    mode: '0440'
+  register: download_archive
+  retries: 5
+  delay: 2
+  until: download_archive is success
+  when: awscli_current_version.changed
+  tags:
+    - install
+    - download-archive
+
+- name: Unarchive Installer # noqa no-handler
+  ansible.builtin.unarchive:
+    src: "{{ temp_folder }}/awscliv2.zip"
+    dest: "{{ temp_folder }}/"
+    remote_src: yes
+  register: unarchive_installer
+  when: download_archive.changed    
+  tags:
+    - install
+    - unarchive-installer
+
+- name: Install AWS-CLI # noqa no-handler
+  ansible.builtin.command: "{{ temp_folder }}/aws/install {{ '--update' if awscli_current_version.rc == 0 else ''}}"
+  when: unarchive_installer.changed    
+  tags:
+    - install
+    - install-cli
+
+- name: Cleanup Archive
+  ansible.builtin.file:
+    path: "{{ temp_folder }}/awscliv2.zip"
+    state: absent
+  tags:
+    - install
+    - clean
+
+- name: Cleanup Install
+  ansible.builtin.file:
+    path: "{{ temp_folder }}/aws"
+    state: absent
+  tags:
+    - install
+    - clean

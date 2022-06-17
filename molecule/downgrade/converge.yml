@@ -1,0 +1,7 @@
+---
+- name: Install
+  hosts: all
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        awscli_version: "{{ lookup('env', 'AWSCLI_VERSION') }}"

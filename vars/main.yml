@@ -1,0 +1,6 @@
+---
+awscli_download_url: "https://awscli.amazonaws.com/awscli-exe-linux-{{ ansible_architecture | lower }}{{ '-' + awscli_version if awscli_version is defined and awscli_version != '' else '' }}.zip"
+temp_folder: "/tmp"
+
+dependencies_packages:
+  - unzip
